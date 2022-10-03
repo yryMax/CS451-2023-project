@@ -332,7 +332,7 @@ C11/C++17 and Java support threads natively
 
 **2. Can I put multiple messages in the same packet?**
 
-Yes, as long as you do not utilize the fact that the payloads are sequential integers nor that the total number of messages is known in advance. For example, your code should work correctly if the payload is some arbitrary text.
+Yes, but we limit the number of messages per same packet to 8. Moreover, you should not use the fact that the payloads are sequential integers nor that the total number of messages is known in advance. For example, your code should work correctly if the payload is some arbitrary text.
 
 **3. Can I compress the messages?**
 
