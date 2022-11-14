@@ -301,7 +301,7 @@ Note that these submissions are *incremental*. This means that your work towards
 
 ### Deadlines
 * Perfect Links: October 30th 2022, 23:59
-* Fifo Broadcast: November 20th 2022, 23:59
+* Fifo Broadcast: November 25th 2022, 23:59
 * 3rd yet-to-be-announced deliverable: December 18th 2022, 23:59
 
 ### Submissions
