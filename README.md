@@ -274,8 +274,8 @@ We adjust this number accordingly when the network is not well behaving.
 
 Additionally, we enforce certain limitations during testing:
 * You are given 2 CPU cores.
-* You are given 2GiB of memory.
-* You are allowed to spawn up to 1024 threads.
+* You are given a maximum of 64MiB per process.
+* You are allowed to use a maximum of 8 threads per process.
 
 Poorly engineered implementations may fail some tests due to these limitations (e.g., if you create a new thread for every message you broadcast).
 
