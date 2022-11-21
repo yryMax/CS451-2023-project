@@ -398,7 +398,7 @@ Note that these submissions are *incremental*. This means that your work towards
 ### Deadlines
 * Perfect Links: October 30th 2022, 23:59
 * Fifo Broadcast: November 25th 2022, 23:59
-* 3rd yet-to-be-announced deliverable: December 18th 2022, 23:59
+* Lattice Agreement: December 18th 2022, 23:59
 
 ### Submissions
 Submit your deliverable by uploading it to [this](https://cs451-submissions.epfl.ch:8083) website. Use EPFL’s VPN if you cannot access the submission website.
