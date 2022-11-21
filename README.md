@@ -191,7 +191,7 @@ In other words, in multi-shot lattice agreement, processes run single-shot latti
 lattice agreement must be satisfied individually in every every slot.
 
 #### The `CONFIG` file
-  - The config file multiple lines.
+  - The config file consists of multiple lines.
   - The first line contains three integers, `p vs ds` (separated by single spaces). `p` denotes the number of proposals for each process, `vs` denotes the maximum number of elements in a proposal, and `ds` denotes the maximum number of distinct elements across all proposals of all processes.
   - The subsequent `p` lines contain proposals. Each proposal is a set of positive integers, written as a list of integers separated by single spaces. Every line can have up to `vs` integers.
 
