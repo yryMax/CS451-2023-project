@@ -211,7 +211,7 @@ An example of the content of a config file (ellipsis denotes skipped content)
 
 #### The `OUTPUT` file
 The text file contains a log of decisions. Each decision is represented by one line of the output file, 
-by a Unix-style line break `\n`. Given that proposals are set of integers, so are decisions. Thus, a decision **should** contain a list of integers separated by single spaces (and terminated by a Unix-style line break `\n`). The order of lines in the output file must be the same as the order of lines (proposals) in the config file.
+by a Unix-style line break `\n`. Given that proposals are set of integers, so are decisions. Thus, a decision **should** contain a list of integers separated by single spaces (and terminated by a Unix-style line break `\n`). The order of the lines in the output file must be the same as the order of the lines (proposals) in the config file.
 
 An example of the content of an output file (ellipses denote skipped content in this example)
 ```
