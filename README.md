@@ -183,7 +183,7 @@ b 4
 ```
 
 ### Lattice Agreement
-Lattice Agreement is a strictly weaker than consensus, as it can be solved in the asynchronous model. The formal specification, as well as an algorithm that implements it, is provided [moodle](https://moodle.epfl.ch/mod/resource/view.php?id=1228278). In a nutshell, processes propose sets of values and also decide set of values.
+Lattice Agreement is a strictly weaker than consensus, as it can be solved in the asynchronous model. The formal specification, as well as an algorithm that implements it, is provided in [moodle](https://moodle.epfl.ch/mod/resource/view.php?id=1228278). In a nutshell, processes propose sets of values and also decide set of values.
 However, notice that the provided algorithm is single-shot, i.e., processes propose and decide only once.
 
 The goal of this submission is to implement multi-shot lattice agreement, in which processes decide on a sequence of proposals.
@@ -192,7 +192,7 @@ lattice agreement must be satisfied individually in every every slot.
 
 #### The `CONFIG` file
   - The config file multiple lines.
-  - The first line contains three integers, `p vs ds` (separated by single spaces). `p` denotes the number of proposals for each process, `vs` denotes the maximum number of elements in a proposal, and `ds` denotes the number of distinct elements across all proposals of all processes.
+  - The first line contains three integers, `p vs ds` (separated by single spaces). `p` denotes the number of proposals for each process, `vs` denotes the maximum number of elements in a proposal, and `ds` denotes the maximum number of distinct elements across all proposals of all processes.
   - The subsequent `p` lines contain proposals. Each proposal is a set of positive integers, written as a list of integers separated by single spaces. Every line can have up to `vs` integers.
 
 An example of the content of a config file (ellipsis denotes skipped content)
@@ -210,7 +210,8 @@ An example of the content of a config file (ellipsis denotes skipped content)
 *Note*: In the previous submissions, every process received the same config file. In this submission, every process receives a different config file. These config files have identical first lines and differ in the rest of the lines.
 
 #### The `OUTPUT` file
-The text file contains a log of decisions. Each decision is represented by one line of the output file, terminated by a Unix-style line break `\n`. Given that proposals are set of integers, so are decisions. Thus, a decision **should** contain a list of integers separated by single spaces (and terminated by terminated by a Unix-style line break `\n`).
+The text file contains a log of decisions. Each decision is represented by one line of the output file, 
+by a Unix-style line break `\n`. Given that proposals are set of integers, so are decisions. Thus, a decision **should** contain a list of integers separated by single spaces (and terminated by a Unix-style line break `\n`).
 
 An example of the content of an output file (ellipses denote skipped content in this example)
 ```
