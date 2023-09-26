@@ -12,9 +12,9 @@ The goal of this practical project is to implement certain building blocks neces
 
 Various applications (e.g., a payment system) can be built upon these lower-level abstractions. We will check your submissions (see [Submissions](#submissions)) for correctness and performance as part of the final evaluation.
 
-For a quick description of the project, refer to [these](https://docs.google.com/presentation/d/1VkJSjSkLK29qQjlxUWtoqp20I-An72BZI_2CaLVh8Cs) slides.
+For a quick description of the project, refer to [these](https://docs.google.com/presentation/d/14mpRVvEgAYzvws48hUljDygBaFdfGvqqPQP6AJVLLGA/edit?usp=sharing) slides.
 
-For a quick overview of the project's evaluation, refer to [these](https://docs.google.com/presentation/d/143jE90eoQbjwzE8BBXm865sMDZnhZNUcv9_zuP6o7WM) slides.
+For a quick overview of the project's evaluation, refer to [these](https://docs.google.com/presentation/d/1ypP3EFN1Prydo_sBTTdmqOAw_ZwamnB3otyhIb6NHOo/edit?usp=sharing) slides.
 
 All details about the project are given below.
 
@@ -242,14 +242,14 @@ This is the recommended option.
 * We provide support for it.
 * Thus, students with limited programming knowledge are advised to use it.
 
-Get the VM Image from [here](https://github.com/LPD-EPFL/CS451-2022-project/blob/master/VM.txt) (Windows/Linux/Mac machines with Intel/AMD CPUs, as well as Mac machines with ARM CPUs).
+Get the VM Image from [here](https://github.com/LPD-EPFL/CS451-2023-project/blob/master/VM.txt) (Windows/Linux/Mac machines with Intel/AMD CPUs, as well as Mac machines with ARM CPUs).
 
 ### Using the Docker container
 This is recommended only to students with an existing knowledge in distributed programming.
 * It already includes the exact versions of the build tools mentioned previously.
 * It only works in Linux and Mac
 * We do not provide support for it.
-* Follow [these](https://github.com/LPD-EPFL/CS451-2022-project/tree/master/docker) instructions to build the container.
+* Follow [these](https://github.com/LPD-EPFL/CS451-2023-project/tree/master/docker) instructions to build the container.
 
 ### Doing it your way
 This is not advised. Do it at your own risk.
@@ -259,7 +259,7 @@ This is not advised. Do it at your own risk.
 
 
 ## Running the project
-We provide two ways of running your project. The first way is manually, which is useful for early development and debugging. The second way is automatic, using the provided python [script](https://github.com/LPD-EPFL/CS451-2022-project/blob/master/tools/stress.py).
+We provide two ways of running your project. The first way is manually, which is useful for early development and debugging. The second way is automatic, using the provided python [script](https://github.com/LPD-EPFL/CS451-2023-project/blob/master/tools/stress.py).
 
 ### Manual execution
 
@@ -398,7 +398,7 @@ Note that these submissions are *incremental*. This means that your work towards
 ### Deadlines
 * Perfect Links: November 5th 2023, 23:59
 * Fifo Broadcast: November 26th 2023, 23:59
-* Lattice Agreement: December 17th 2022, 23:59
+* Lattice Agreement: December 17th 2023, 23:59
 
 ### Submissions
 Submit your deliverable by uploading it to [this](https://cs451-submissions.epfl.ch:8083) website. Use EPFL’s VPN if you cannot access the submission website.
