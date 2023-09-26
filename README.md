@@ -1,4 +1,4 @@
-# Distributed Algorithms 2022/23 - EPFL
+# Distributed Algorithms 2023/24 - EPFL
 
 
 # Overview
@@ -391,14 +391,14 @@ This project is meant to be completed individually. Copying from others is prohi
 This project accounts for 30% of the final grade and comprises three submissions:
   - A runnable application implementing Perfect Links (20%),
   - A runnable application implementing FIFO Broadcast (40%), and
-  - The last submission accounts for 40%.
+  - A runnable application implementing Lattice Agreement (40%).
 
 Note that these submissions are *incremental*. This means that your work towards the first will help you in your work towards the second.
 
 ### Deadlines
-* Perfect Links: October 30th 2022, 23:59
-* Fifo Broadcast: November 25th 2022, 23:59
-* Lattice Agreement: December 18th 2022, 23:59
+* Perfect Links: November 5th 2023, 23:59
+* Fifo Broadcast: November 26th 2023, 23:59
+* Lattice Agreement: December 17th 2022, 23:59
 
 ### Submissions
 Submit your deliverable by uploading it to [this](https://cs451-submissions.epfl.ch:8083) website. Use EPFL’s VPN if you cannot access the submission website.
