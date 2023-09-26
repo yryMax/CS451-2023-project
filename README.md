@@ -183,7 +183,7 @@ b 4
 ```
 
 ### Lattice Agreement
-Lattice Agreement is a strictly weaker than consensus, as it can be solved in the asynchronous model. The formal specification, as well as an algorithm that implements it, is provided in [moodle](https://moodle.epfl.ch/mod/resource/view.php?id=1230974). In a nutshell, processes propose sets of values and also decide set of values.
+Lattice Agreement is a strictly weaker than consensus, as it can be solved in the asynchronous model. The formal specification, as well as an algorithm that implements it, will be provided in moodle. In a nutshell, processes propose sets of values and also decide set of values.
 However, notice that the provided algorithm is single-shot, i.e., processes propose and decide only once.
 
 The goal of this submission is to implement multi-shot lattice agreement, in which processes decide on a sequence of proposals.
