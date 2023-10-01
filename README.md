@@ -132,7 +132,7 @@ You can assume that a process crash will be simulated only by the `SIGINT` or `S
 
 ## Applications
 ### Perfect Links application
-In this application (submission #0) a set of processes exchange messages using perfect links.
+In this application, a set of processes exchange messages using perfect links.
 In particular a single process only receives messages while the rest of processes only send messages.
 The communication of every sender with the receiver is realized using the perfect links abstraction.
 
