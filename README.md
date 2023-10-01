@@ -43,7 +43,7 @@ Inter-process point-to-point messages (at the low level) must be carried exclusi
 
 ## Application messages
 The messages exchanged by processes contain a payload, which differs based on the submission.
-For the first two submission, the payload is an integer number. For the third submission is a list of integer numbers.
+For the first two submission, the payload is an integer number. For the third submission, it is a list of integer numbers.
 Apart from the payload, the exchanged messages should also contain other metadata information which is necessary to implement the required abstractions.
 We ensure that a messages up to 64KiB can fit in a single UDP packet, thus a sane implementation should not worry about [message fragmentation](https://en.wikipedia.org/wiki/Maximum_transmission_unit).
 
