@@ -145,7 +145,7 @@ Below are the details for the `CONFIG` and `OUTPUT` files of this submission.
 #### The `OUTPUT` file
 The output file contains a log of send/receive events. Each event is represented by one line of the output file, terminated by a Unix-style line break `\n`. There are two types of events to be logged:
     - sending of an application message, using the format `b`*`seq_nr`*, where `seq_nr` is the sequence number of the message. These messages are numbered sequentially at each process, starting from `1`.
-    - delivery of an application message, using the format `d`*`sender`* *`seq_nr`*, where *`sender`* is the number of the process that sent the message and *`seq_nr`* is the sequence number of the message (as numbered by the sending process).
+    - delivery of an application message, using the format `d`*`sender`* *`seq_nr`*, where *`sender`* is the id of the process that sent the message and *`seq_nr`* is the sequence number of the message (as numbered by the sending process).
 
 An example of the content of an output file (ellipsis denotes skipped content)
 ```
