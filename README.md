@@ -158,7 +158,7 @@ b 3
 *Note*: By default, the payload carried by an application message is only the sequence number of that message. Though the payload is known in advance, your implementation should not utilize this information. In other words, your implementation should be agnostic to the contents of the payload. For example, your implementation should work correctly if the payload is arbitrary text instead of sequential numbers. In addition, your implementation should not rely on the fact that the total number of messages (to be broadcast) is known in advance, i.e., your implementation should work correctly if messages arrive as a stream.
 
 ### FIFO Broadcast application
-This is the same abstraction as the one taught in class. Informally, Every process is both broadcasting and delivering messages from every other process (including itself). You must implement FIFO broadcast on top of Uniform Reliable Broadcast (URB).
+This is the same abstraction as the one taught in class. Informally, every process is both broadcasting and delivering messages from every other process (including itself). You must implement FIFO broadcast on top of Uniform Reliable Broadcast (URB).
 
 #### The `CONFIG` file
   - The config file contains an integer `m` in its first line. `m` defines how many messages each process should broadcast. Processes broadcast messages `1` to `m` in order.
