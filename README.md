@@ -136,7 +136,7 @@ In this application, a set of processes exchange messages using perfect links.
 In particular a single process only receives messages while the rest of processes only send messages.
 The communication of every sender with the receiver is realized using the perfect links abstraction.
 
-Below are the details for the `CONFIG` and `CONFIG` files of this submission.
+Below are the details for the `CONFIG` and `OUTPUT` files of this submission.
 
 #### The `CONFIG` file
   - The config file contains two integers `m i` in its first line. The integers are separated by a single space character. `m` defines how many messages each sender process should send. `i` is the index of the receiver process. The receiver process only receives messages while the sender processes only send messages. All `n-1` sender processes, send `m` messages each.
