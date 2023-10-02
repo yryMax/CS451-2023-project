@@ -226,7 +226,7 @@ An example of the content of an output file (ellipses denote skipped content in 
 
 ## Compilation
 All submitted implementations will be tested using Ubuntu 18.04 running on a 64-bit architecture.
-These are the specific versions of toolchains where you project will be tested upon:
+These are the specific versions of toolchains where your project will be tested upon:
   - gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
   - g++ (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
   - cmake version 3.10.2
