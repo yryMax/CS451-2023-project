@@ -424,7 +424,7 @@ If your submission passes the initial validation, we will evaluate it based on t
 **1. Can I use multi-threading?**
 
 Yes! However, only spawn threads (don't spawn child ​processes​) from your process.
-C11/C++17 and Java support threads natively
+C11/C++17 and Java support threads natively.
 
 **2. Can I put multiple messages in the same packet?**
 
