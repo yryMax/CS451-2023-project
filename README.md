@@ -382,7 +382,7 @@ Finally, two more limitation are in place:
 These are only to guard against programming mistakes (e.g., infinite loop in the output that depletes disk space). You should not be worried about them.
 
 ## Cooperation
-This project is meant to be completed individually. Copying from others is prohibited. You are free (and encouraged) to discuss the projects with others, but the submitted source code must be the exclusive work yours. Multiple copies of the same code will be disregarded without investigating which is the "original" and which is the "copy". Furthermore, please give appropriate credit to pieces of code you found online (e.g. in stackoverflow).
+This project is meant to be completed individually. Copying from others is prohibited. You are free (and encouraged) to discuss the projects with others, but the submitted source code must be your exclusive work. Multiple copies of the same code will be disregarded without investigating which is the "original" and which is the "copy". Furthermore, please give appropriate credit to pieces of code you found online (e.g. in stackoverflow).
 
 *Note*: code similarity tools will be used to check copying.
 
