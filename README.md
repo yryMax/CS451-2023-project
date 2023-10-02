@@ -167,7 +167,7 @@ This is the same abstraction as the one taught in class. Informally, every proce
 The output file contains a log of broadcast/deliver events. Each event is represented by one line of the output file, terminated by a Unix-style line break `\n`. There are two types of events to be logged:
     -  broadcast of an application message, using the format `b`*`seq_nr`*,
   where `seq_nr` is the sequence number of the message. These messages are numbered sequentially at each process, starting from `1`.
-    - delivery of and application message, using the format `d`*`sender`* *`seq_nr`*, where *`sender`* is the number of the process that broadcast the message and *`seq_nr`* is the sequence number of the message (as numbered by the broadcasting process).
+    - delivery of an application message, using the format `d`*`sender`* *`seq_nr`*, where *`sender`* is the number of the process that broadcast the message and *`seq_nr`* is the sequence number of the message (as numbered by the broadcasting process).
 
 An example of the content of an output file (ellipses denote skipped content in this example)
 ```
