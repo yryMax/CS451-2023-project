@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <targets>
+      <target name="WSL - Ubuntu-22.04" type="wsl" uuid="738721e4-5217-4db0-a45d-14eb562757ef">
+        <config>
+          <option name="distributionMsId" value="Ubuntu-22.04" />
+          <option name="projectRootOnTarget" value="{exitCode=0, timeout=false, cancelled=false, stdout=&lt;3&gt;WSL (3215) ERROR: UtilTranslatePathList:2803: Failed to translate D:\PyCharm 2023.2\bin&#10;/mnt/c/Program Files/JetBrains/IntelliJ IDEA 2023.2.1/jbr/bin&#10;, stderr=}/template_java" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/usr/lib/jvm/java-11-openjdk-amd64" />
+            <option name="javaVersionString" value="11.0.20" />
+          </config>
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>
