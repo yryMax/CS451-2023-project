@@ -1,18 +1,30 @@
 package cs451;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
-
+import java.util.*;
 public class Main {
 
+    private static List<String>logs;
+    private static Parser parserOutput;
     private static void handleSignal() {
         //immediately stop network packet processing
         System.out.println("Immediately stopping network packet processing.");
 
-        //write/flush output file if necessary
         System.out.println("Writing output.");
+        try {
+            String path = parserOutput.output();
+            File file = new File(path);
+            file.createNewFile();
+            FileWriter writer = new FileWriter(file);
+            for (String log : logs) {
+                writer.write(log + "\n");
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private static void initSignalHandlers() {
@@ -27,7 +39,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         Parser parser = new Parser(args);
         parser.parse();
-
+        parserOutput = parser;
         initSignalHandlers();
 
         // example
@@ -57,9 +69,9 @@ public class Main {
         System.out.println("Doing some initialization\n");
 
         System.out.println("Broadcasting and delivering messages...\n");
-
-        // After a process finishes broadcasting,
-        // it waits forever for the delivery of messages.
+        logs = new ArrayList<>();
+        logs.add("Log 1");
+        logs.add("Log 2");
         while (true) {
             // Sleep for 1 hour
             Thread.sleep(60 * 60 * 1000);
