@@ -44,7 +44,7 @@ public class Main {
             String path = parserOutput.output();
             File file = new File(path);
             file.createNewFile();
-            FileWriter writer = new FileWriter(file);
+            FileWriter writer = new FileWriter(file, true);
             for (String log : logs) {
                 writer.write(log + "\n");
             }
@@ -107,20 +107,26 @@ public class Main {
         System.out.println("Number of messages: " + m);
         System.out.println("Receiver ID: " + receiverId);
 
-
+        int n = parser.hosts().size();
 
         if(parser.myId() == receiverId){
             System.out.println("I am the receiver");
             // listen for messages, if message is received, print it to output file
             try {
-                ServerSocket serverSocket = new ServerSocket(parser.hosts().get(parser.myId()).getPort());
+                int port = parser.hosts().get(parser.myId()-1).getPort();
+                System.out.println("listening to: " + port);
+                ServerSocket serverSocket = new ServerSocket(parser.hosts().get(parser.myId()-1).getPort());
+                int rest = n-1;
                 while (true) {
                     try (Socket clientSocket = serverSocket.accept();
                          BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
                         String receivedMessage = in.readLine();
+                        System.out.println("Received message: " + receivedMessage);
                         String[] parts = receivedMessage.split("#");
-                        System.out.println("Received message: " + parts[0] + " " + parts[1]);
-                        logs.add("d " + parts[0] + " " + parts[1]);
+                        for(int i=0;i<parts.length;i+=2){
+                            System.out.println("Received message: " + parts[i] + " " + parts[i+1]);
+                            logs.add("d " + parts[i] + " " + parts[i+1]);
+                        }
                     }
                 }
             } catch (IOException e) {
@@ -129,25 +135,25 @@ public class Main {
         }
         else{
             System.out.println("I am one of the sender");
-            int n = parser.hosts().size();
-            //create n thread to try to connect to all other hosts blockingly, just keep trying until success
-            connectThread[] connectThreads = new connectThread[n];
-            for(int i = 0; i < n; i++){
-                connectThreads[i] = new connectThread(i, parser.hosts().get(i).getPort(), parser.hosts().get(i).getIp());
-            }
-            for(int i = 0; i < n; i++){
-                connectThreads[i].start();
-            }
-            for(int i = 0; i < n; i++){
-                connectThreads[i].join();
-            }
-            for(int i = 1; i <= m; i++){
-                logs.add("b " + i);
-                for(int j=0;j<n;i++){
-                    String message = i + "#" + parser.myId();
-                    System.out.println("Sending message: " + message);
-                    connectThreads[j].getSocket().getOutputStream().write(message.getBytes());
+
+            System.out.println("connect to the receiver ");
+            Socket socket = null;
+            while(true){
+                try {
+                    socket = new Socket(parser.hosts().get(receiverId-1).getIp(), parser.hosts().get(receiverId-1).getPort());
+                    break;
+                } catch (IOException e) {
+                    continue;
                 }
+            }
+            System.out.println("Connected to the receiver");
+            for(int i = 1; i <= m; i++){
+                System.out.println("Sending message: " + i);
+                logs.add("b " + i);
+                String message = i + "#" + parser.myId() + "#";
+                System.out.println("Sending message: " + message);
+                socket.getOutputStream().write(message.getBytes());
+
             }
         }
     }
