@@ -150,7 +150,7 @@ public class Main {
             for(int i = 1; i <= m; i++){
                 System.out.println("Sending message: " + i);
                 logs.add("b " + i);
-                String message = i + "#" + parser.myId() + "#";
+                String message = parser.myId() + "#" + i + "#";
                 System.out.println("Sending message: " + message);
                 socket.getOutputStream().write(message.getBytes());
 
