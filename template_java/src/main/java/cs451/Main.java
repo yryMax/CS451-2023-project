@@ -1,8 +1,9 @@
 package cs451;
 
 import java.io.*;
-import java.net.Socket;
-import java.net.ServerSocket;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 import java.util.*;
 
 public class Main {
@@ -18,7 +19,7 @@ public class Main {
             String path = parserOutput.output();
             File file = new File(path);
             file.createNewFile();
-            FileWriter writer = new FileWriter(file, true);
+            FileWriter writer = new FileWriter(file, false);
             for (String log : logs) {
                 writer.write(log + "\n");
             }
@@ -83,51 +84,53 @@ public class Main {
 
         int n = parser.hosts().size();
 
-        if(parser.myId() == receiverId){
-            System.out.println("I am the receiver");
-            // listen for messages, if message is received, print it to output file
-            try {
-                int port = parser.hosts().get(parser.myId()-1).getPort();
-                System.out.println("listening to: " + port);
-                ServerSocket serverSocket = new ServerSocket(parser.hosts().get(parser.myId()-1).getPort());
-                int rest = n-1;
-                while (true) {
-                    try (Socket clientSocket = serverSocket.accept();
-                         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
-                        String receivedMessage = in.readLine();
-                        System.out.println("Received message: " + receivedMessage);
-                        String[] parts = receivedMessage.split("#");
-                        for(int i=0;i<parts.length;i+=2){
-                            System.out.println("Received message: " + parts[i] + " " + parts[i+1]);
-                            logs.add("d " + parts[i] + " " + parts[i+1]);
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        Host receiver = null;
+        Host sender = null;
+
+        for(Host host: parser.hosts()){
+            if(host.getId() == receiverId){
+                receiver = host;
+            }
+            if(host.getId() == parser.myId()){
+                sender = host;
             }
         }
-        else{
-            System.out.println("I am one of the sender");
 
-            System.out.println("connect to the receiver ");
-            Socket socket = null;
-            while(true){
-                try {
-                    socket = new Socket(parser.hosts().get(receiverId-1).getIp(), parser.hosts().get(receiverId-1).getPort());
-                    break;
-                } catch (IOException e) {
-                    continue;
+        DatagramSocket socket = new DatagramSocket(sender.getPort());
+
+
+        if(parser.myId() == receiverId){
+            System.out.println("I am the receiver");
+            byte[] buffer = new byte[1024];
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+
+            while (true) {
+                socket.receive(packet);
+                String receivedMessage = new String(packet.getData(), 0, packet.getLength());
+                System.out.println("Received message: " + receivedMessage);
+                String[] parts = receivedMessage.split("#");
+                for(int i=0; i<parts.length; i+=2){
+                    System.out.println("Received message: " + parts[i] + " " + parts[i+1]);
+                    logs.add("d " + parts[i] + " " + parts[i+1]);
                 }
+                // Clear the buffer after processing each packet
+                packet.setLength(buffer.length);
             }
-            System.out.println("Connected to the receiver");
-            for(int i = 1; i <= m; i++){
+
+        }
+        else {
+            System.out.println("I am one of the senders");
+            // Set up the address for the receiver
+            InetSocketAddress receiverAddress = new InetSocketAddress(receiver.getIp(), receiver.getPort());
+            // Send messages
+            for(int i = 1; i <= m; i++) {
                 System.out.println("Sending message: " + i);
                 logs.add("b " + i);
                 String message = parser.myId() + "#" + i + "#";
-                System.out.println("Sending message: " + message);
-                socket.getOutputStream().write(message.getBytes());
-
+                byte[] messageBytes = message.getBytes();
+                DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length, receiverAddress);
+                socket.send(sendPacket); // Send the packet
+                System.out.println("Sent message: " + message);
             }
         }
     }
