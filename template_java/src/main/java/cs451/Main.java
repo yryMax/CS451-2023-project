@@ -5,32 +5,6 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import java.util.*;
 
-class connectThread extends Thread{
-    private Socket socket;
-    private int id;
-    private int port;
-    private String ip;
-    public connectThread(int id, int port, String ip){
-        this.id = id;
-        this.port = port;
-        this.ip = ip;
-    }
-    public void run(){
-        System.out.println("Trying to connect to " + id + " at " + ip + ":" + port);
-        while(true){
-            try {
-                socket = new Socket(ip, port);
-                break;
-            } catch (IOException e) {
-                continue;
-            }
-        }
-        System.out.println("Connected to " + id);
-    }
-    public Socket getSocket(){
-        return socket;
-    }
-}
 public class Main {
 
     private static List<String>logs;
