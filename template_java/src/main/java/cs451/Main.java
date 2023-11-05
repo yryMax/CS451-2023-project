@@ -5,23 +5,21 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.util.*;
-
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class Main {
 
     private static List<String>logs;
     private static Parser parserOutput;
+
+    private static FileWriter writer;
     private static void handleSignal() {
         //immediately stop network packet processing
         System.out.println("Immediately stopping network packet processing.");
 
         System.out.println("Writing output.");
         try {
-            String path = parserOutput.output();
-            File file = new File(path);
-            file.createNewFile();
-            FileWriter writer = new FileWriter(file, false);
             for (String log : logs) {
                 writer.write(log + "\n");
             }
@@ -82,7 +80,7 @@ public class Main {
         System.out.println("Doing some initialization\n");
 
         System.out.println("Broadcasting and delivering messages...\n");
-        logs = new ArrayList<>();
+        logs =  new CopyOnWriteArrayList<String>();
 
         File fileConfig = new File(parser.config());
         Scanner sc = new Scanner(fileConfig);
@@ -108,6 +106,11 @@ public class Main {
             seq.put(host.getId(), 0);
         }
 
+        String path = parserOutput.output();
+        File file = new File(path);
+        file.createNewFile();
+        writer = new FileWriter(file, false);
+
         DatagramSocket socket = new DatagramSocket(sender.getPort());
 
 
@@ -131,12 +134,15 @@ public class Main {
                     int seq_num = Integer.parseInt(d[2]);
                     int sender_id = Integer.parseInt(d[0]);
                     int message = Integer.parseInt(d[1]);
-                    System.out.println("Sender ID: " + sender_id);
-                    System.out.println("Message: " + message);
-                    System.out.println("Sequence number: " + seq_num);
                     if(seq_num == seq.get(sender_id) + 1){
                         seq.put(sender_id, seq_num);
                         logs.add("d " + sender_id + " " + message);
+                        if(logs.size() >= 10000){
+                            for (String log : logs) {
+                                writer.write(log + "\n");
+                            }
+                            logs.clear();
+                        }
                     }
                 }
                 // Clear the buffer after processing each packet
