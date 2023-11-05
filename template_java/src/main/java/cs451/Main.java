@@ -156,15 +156,17 @@ public class Main {
             InetSocketAddress receiverAddress = new InetSocketAddress(receiver.getIp(), receiver.getPort());
             // Send messages
             while (true) {
+                boolean flag = true;
                 for(int i = 1; i <= m; i++) {
                     System.out.println("Sending message: " + i);
-                    logs.add("b " + i);
+                    if(flag)logs.add("b " + i);
                     String msg = parser.myId() + "ccc" + i + "ccc" + i + "bbb";
                     byte[] messageBytes = msg.getBytes();
                     DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length, receiverAddress);
                     socket.send(sendPacket); // Send the packet
                     System.out.println("Sent message: " + msg);
                 }
+                flag = false;
             }
         }
     }
