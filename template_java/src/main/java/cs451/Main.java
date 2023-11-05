@@ -155,8 +155,8 @@ public class Main {
             // Set up the address for the receiver
             InetSocketAddress receiverAddress = new InetSocketAddress(receiver.getIp(), receiver.getPort());
             // Send messages
+            boolean flag = true;
             while (true) {
-                boolean flag = true;
                 for(int i = 1; i <= m; i++) {
                     System.out.println("Sending message: " + i);
                     if(flag)logs.add("b " + i);
