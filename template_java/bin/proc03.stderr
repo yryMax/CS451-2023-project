@@ -1,5 +1,5 @@
 Exception in thread "Thread-0" java.util.ConcurrentModificationException
 	at java.base/java.util.ArrayList$Itr.checkForComodification(ArrayList.java:1043)
 	at java.base/java.util.ArrayList$Itr.next(ArrayList.java:997)
-	at cs451.Main.handleSignal(Main.java:23)
-	at cs451.Main$1.run(Main.java:37)
+	at cs451.Main.handleSignal(Main.java:25)
+	at cs451.Main$1.run(Main.java:39)

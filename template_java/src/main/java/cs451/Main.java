@@ -42,7 +42,7 @@ public class Main {
     }
 
     public static boolean checkValid(String s){
-        parts = s.split("#");
+        String[] parts = s.split("ccc");
         if(parts.length != 3){
             return false;
         }
@@ -113,23 +113,27 @@ public class Main {
 
         if(parser.myId() == receiverId){
             System.out.println("I am the receiver");
-            byte[] buffer = new byte[4096];
+            byte[] buffer = new byte[1024];
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
             while (true) {
                 socket.receive(packet);
                 String receivedMessage = new String(packet.getData(), 0, packet.getLength());
                 System.out.println("Received message: " + receivedMessage);
-                String[] parts = receivedMessage.split("|");
+                String[] parts = receivedMessage.split("bbb");
                 for(int i=0; i<parts.length; i++){
-                    System.out.println("Received message: " + parts[i]);
+                    System.out.println("Received message part: " + parts[i]);
                     if(!checkValid(parts[i])){
                         continue;
                     }
-                    int d = parts[i].split("#");
-                    int seq_num = Integer.parseInt(d[0]);
-                    int sender_id = Integer.parseInt(d[1]);
-                    int message = Integer.parseInt(d[2]);
+                    System.out.println();
+                    String[] d = parts[i].split("ccc");
+                    int seq_num = Integer.parseInt(d[2]);
+                    int sender_id = Integer.parseInt(d[0]);
+                    int message = Integer.parseInt(d[1]);
+                    System.out.println("Sender ID: " + sender_id);
+                    System.out.println("Message: " + message);
+                    System.out.println("Sequence number: " + seq_num);
                     if(seq_num == seq.get(sender_id) + 1){
                         seq.put(sender_id, seq_num);
                         logs.add("d " + sender_id + " " + message);
@@ -149,11 +153,11 @@ public class Main {
                 for(int i = 1; i <= m; i++) {
                     System.out.println("Sending message: " + i);
                     logs.add("b " + i);
-                    String message = i + '#' + parser.myId() + "#" + i + "|";
-                    byte[] messageBytes = message.getBytes();
+                    String msg = parser.myId() + "ccc" + i + "ccc" + i + "bbb";
+                    byte[] messageBytes = msg.getBytes();
                     DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length, receiverAddress);
                     socket.send(sendPacket); // Send the packet
-                    System.out.println("Sent message: " + message);
+                    System.out.println("Sent message: " + msg);
                 }
             }
         }
