@@ -6,6 +6,8 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.util.*;
 
+
+
 public class Main {
 
     private static List<String>logs;
@@ -37,6 +39,14 @@ public class Main {
                 handleSignal();
             }
         });
+    }
+
+    public static boolean checkValid(String s){
+        parts = s.split("#");
+        if(parts.length != 3){
+            return false;
+        }
+        return true;
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
@@ -87,6 +97,7 @@ public class Main {
         Host receiver = null;
         Host sender = null;
 
+        Map<Integer, Integer> seq = new HashMap<>();
         for(Host host: parser.hosts()){
             if(host.getId() == receiverId){
                 receiver = host;
@@ -94,6 +105,7 @@ public class Main {
             if(host.getId() == parser.myId()){
                 sender = host;
             }
+            seq.put(host.getId(), 0);
         }
 
         DatagramSocket socket = new DatagramSocket(sender.getPort());
@@ -101,17 +113,27 @@ public class Main {
 
         if(parser.myId() == receiverId){
             System.out.println("I am the receiver");
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[4096];
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
             while (true) {
                 socket.receive(packet);
                 String receivedMessage = new String(packet.getData(), 0, packet.getLength());
                 System.out.println("Received message: " + receivedMessage);
-                String[] parts = receivedMessage.split("#");
-                for(int i=0; i<parts.length; i+=2){
-                    System.out.println("Received message: " + parts[i] + " " + parts[i+1]);
-                    logs.add("d " + parts[i] + " " + parts[i+1]);
+                String[] parts = receivedMessage.split("|");
+                for(int i=0; i<parts.length; i++){
+                    System.out.println("Received message: " + parts[i]);
+                    if(!checkValid(parts[i])){
+                        continue;
+                    }
+                    int d = parts[i].split("#");
+                    int seq_num = Integer.parseInt(d[0]);
+                    int sender_id = Integer.parseInt(d[1]);
+                    int message = Integer.parseInt(d[2]);
+                    if(seq_num == seq.get(sender_id) + 1){
+                        seq.put(sender_id, seq_num);
+                        logs.add("d " + sender_id + " " + message);
+                    }
                 }
                 // Clear the buffer after processing each packet
                 packet.setLength(buffer.length);
@@ -123,14 +145,16 @@ public class Main {
             // Set up the address for the receiver
             InetSocketAddress receiverAddress = new InetSocketAddress(receiver.getIp(), receiver.getPort());
             // Send messages
-            for(int i = 1; i <= m; i++) {
-                System.out.println("Sending message: " + i);
-                logs.add("b " + i);
-                String message = parser.myId() + "#" + i + "#";
-                byte[] messageBytes = message.getBytes();
-                DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length, receiverAddress);
-                socket.send(sendPacket); // Send the packet
-                System.out.println("Sent message: " + message);
+            while (true) {
+                for(int i = 1; i <= m; i++) {
+                    System.out.println("Sending message: " + i);
+                    logs.add("b " + i);
+                    String message = i + '#' + parser.myId() + "#" + i + "|";
+                    byte[] messageBytes = message.getBytes();
+                    DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length, receiverAddress);
+                    socket.send(sendPacket); // Send the packet
+                    System.out.println("Sent message: " + message);
+                }
             }
         }
     }
