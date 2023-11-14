@@ -7,7 +7,6 @@ import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-
 public class Main {
 
     private static List<String>logs;
@@ -47,7 +46,7 @@ public class Main {
         return true;
     }
 
-    public static void main(String[] args) throws InterruptedException, IOException {
+    public static void main(String[] args) throws IOException {
         Parser parser = new Parser(args);
         parser.parse();
         parserOutput = parser;
@@ -118,31 +117,29 @@ public class Main {
             System.out.println("I am the receiver");
             byte[] buffer = new byte[1024];
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-
+            Message message = null;
             while (true) {
                 socket.receive(packet);
-                String receivedMessage = new String(packet.getData(), 0, packet.getLength());
-                System.out.println("Received message: " + receivedMessage);
-                String[] parts = receivedMessage.split("bbb");
-                for(int i=0; i<parts.length; i++){
-                    System.out.println("Received message part: " + parts[i]);
-                    if(!checkValid(parts[i])){
-                        continue;
-                    }
-                    System.out.println();
-                    String[] d = parts[i].split("ccc");
-                    int seq_num = Integer.parseInt(d[2]);
-                    int sender_id = Integer.parseInt(d[0]);
-                    int message = Integer.parseInt(d[1]);
-                    if(seq_num == seq.get(sender_id) + 1){
-                        seq.put(sender_id, seq_num);
-                        logs.add("d " + sender_id + " " + message);
-                        if(logs.size() >= 10000){
-                            for (String log : logs) {
-                                writer.write(log + "\n");
-                            }
-                            logs.clear();
+                try {
+                    message = new Message(packet.getData());
+                }
+                catch (Exception ClassNotFound){
+                    continue;
+                }
+                if(message == null)
+                    continue;
+                System.out.println("Received message: " + message.toString());
+                int seq_num = message.getSeqNum();
+                int sender_id = message.getSenderId();
+                int messageBody = message.getMessage();
+                if(seq_num == seq.get(sender_id) + 1){
+                    seq.put(sender_id, seq_num);
+                    logs.add("d " + sender_id + " " + messageBody);
+                    if(logs.size() >= 10000){
+                        for (String log : logs) {
+                            writer.write(log + "\n");
                         }
+                        logs.clear();
                     }
                 }
                 // Clear the buffer after processing each packet
@@ -160,11 +157,11 @@ public class Main {
                 for(int i = 1; i <= m; i++) {
                     System.out.println("Sending message: " + i);
                     if(flag)logs.add("b " + i);
-                    String msg = parser.myId() + "ccc" + i + "ccc" + i + "bbb";
-                    byte[] messageBytes = msg.getBytes();
+                    Message message = new Message(parser.myId(), i, i);
+                    byte[] messageBytes = message.getBytes();
                     DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length, receiverAddress);
                     socket.send(sendPacket); // Send the packet
-                    System.out.println("Sent message: " + msg);
+                    System.out.println("Sent message: " + message.toString());
                 }
                 flag = false;
             }
