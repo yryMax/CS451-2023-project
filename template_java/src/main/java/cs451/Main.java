@@ -7,12 +7,17 @@ import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+
+
 public class Main {
+
 
     private static List<String>logs;
     private static Parser parserOutput;
 
     private static FileWriter writer;
+    private static Set<Message> delivered;
+    private static DatagramSocket socket;
     private static void handleSignal() {
         //immediately stop network packet processing
         System.out.println("Immediately stopping network packet processing.");
@@ -38,14 +43,30 @@ public class Main {
         });
     }
 
-    public static boolean checkValid(String s){
-        String[] parts = s.split("ccc");
-        if(parts.length != 3){
-            return false;
+    public static void flp2pSend(Host receiver, Message message) throws IOException {
+        InetSocketAddress receiverAddress = new InetSocketAddress(receiver.getIp(), receiver.getPort());
+        byte[] messageBytes = message.getBytes();
+        DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length, receiverAddress);
+        socket.send(sendPacket); // Send the packet
+        System.out.println("Sent message: " + message.toString());
+    }
+
+
+    public static boolean plDeliver(Message message) throws IOException {
+        System.out.println("Received message: " + message.toString());
+        if(!delivered.contains(message)){
+            delivered.add(message);
+            System.out.println("Delivered message: " + message.toString());
+            logs.add("d " + message.getSenderId() + " " + message.getMessage());
+            if(logs.size() >= 10000){
+                for (String log : logs) {
+                    writer.write(log + "\n");
+                }
+                logs.clear();
+            }
         }
         return true;
     }
-
     public static void main(String[] args) throws IOException {
         Parser parser = new Parser(args);
         parser.parse();
@@ -110,9 +131,8 @@ public class Main {
         file.createNewFile();
         writer = new FileWriter(file, false);
 
-        DatagramSocket socket = new DatagramSocket(sender.getPort());
-
-
+        socket = new DatagramSocket(sender.getPort());
+        delivered = new HashSet<>();
         if(parser.myId() == receiverId){
             System.out.println("I am the receiver");
             byte[] buffer = new byte[1024];
@@ -126,23 +146,7 @@ public class Main {
                 catch (Exception ClassNotFound){
                     continue;
                 }
-                if(message == null)
-                    continue;
-                System.out.println("Received message: " + message.toString());
-                int seq_num = message.getSeqNum();
-                int sender_id = message.getSenderId();
-                int messageBody = message.getMessage();
-                if(seq_num == seq.get(sender_id) + 1){
-                    seq.put(sender_id, seq_num);
-                    logs.add("d " + sender_id + " " + messageBody);
-                    if(logs.size() >= 10000){
-                        for (String log : logs) {
-                            writer.write(log + "\n");
-                        }
-                        logs.clear();
-                    }
-                }
-                // Clear the buffer after processing each packet
+                if(message != null) plDeliver(message);
                 packet.setLength(buffer.length);
             }
 
@@ -150,7 +154,7 @@ public class Main {
         else {
             System.out.println("I am one of the senders");
             // Set up the address for the receiver
-            InetSocketAddress receiverAddress = new InetSocketAddress(receiver.getIp(), receiver.getPort());
+
             // Send messages
             boolean flag = true;
             while (true) {
@@ -158,10 +162,7 @@ public class Main {
                     System.out.println("Sending message: " + i);
                     if(flag)logs.add("b " + i);
                     Message message = new Message(parser.myId(), i, i);
-                    byte[] messageBytes = message.getBytes();
-                    DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length, receiverAddress);
-                    socket.send(sendPacket); // Send the packet
-                    System.out.println("Sent message: " + message.toString());
+                    flp2pSend(receiver, message);
                 }
                 flag = false;
             }

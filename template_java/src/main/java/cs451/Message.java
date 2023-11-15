@@ -1,6 +1,7 @@
 package cs451;
 
 import java.io.*;
+import java.util.Objects;
 
 public class Message implements Serializable {
     private int senderId;
@@ -42,5 +43,19 @@ public class Message implements Serializable {
         ObjectOutputStream out = new ObjectOutputStream(bos);
         out.writeObject(this);
         return bos.toByteArray();
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message1 = (Message) o;
+        return senderId == message1.senderId && message == message1.message && seqNum == message1.seqNum;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(senderId, message, seqNum);
     }
 }
