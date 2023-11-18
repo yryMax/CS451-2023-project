@@ -20,6 +20,35 @@ public class Main {
     private static DatagramSocket socket;
     private static List<Host>hosts;
 
+
+
+    static class Receiver implements Runnable{
+
+        @Override
+        public void run() {
+            byte[] buffer = new byte[1024];
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+            Message message = null;
+            while (true) {
+                try {
+                    socket.receive(packet);
+                    try {
+                        message = new Message(packet.getData());
+                    } catch (Exception ClassNotFound) {
+                        continue;
+                    }
+                    if (message != null) {
+                        rbDeliver(message);
+                    }
+                    packet.setLength(buffer.length);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+            }
+        }
+    }
+
     private static void handleSignal() {
         //immediately stop network packet processing
         System.out.println("Immediately stopping network packet processing.");
@@ -54,25 +83,32 @@ public class Main {
     }
 
 
-    public static boolean bebDeliver(Message message) throws IOException {
-        System.out.println("Received message: " + message.toString());
-        if(!delivered.contains(message)){
-            delivered.add(message);
-            System.out.println("Delivered message: " + message.toString());
-            logs.add("d " + message.getSenderId() + " " + message.getMessage());
-            if(logs.size() >= 10000){
-                for (String log : logs) {
-                    writer.write(log + "\n");
-                }
-                logs.clear();
-            }
-        }
-        return true;
-    }
-
     public static void bebBroadcast(Message message) throws IOException {
         for(Host h: hosts){
            flp2pSend(h, message);
+        }
+    }
+
+    public static void rbBroadcast(Message message)  throws IOException {
+        rbDeliver(message);
+    }
+
+    public static void finalDeliver(Message message) throws IOException {
+        System.out.println("Delivered message: " + message.toString());
+        logs.add("d " + message.getSenderId() + " " + message.getMessage());
+        if(logs.size() >= 10000){
+            for (String log : logs) {
+                writer.write(log + "\n");
+            }
+            logs.clear();
+        }
+    }
+    public static void rbDeliver(Message message)  throws IOException {
+        System.out.println("Received message: " + message.toString() + "From p2plink");
+        if(!delivered.contains(message)){
+            delivered.add(message);
+            finalDeliver(message);
+            bebBroadcast(message);
         }
     }
     public static void main(String[] args) throws IOException {
@@ -113,15 +149,13 @@ public class Main {
         File fileConfig = new File(parser.config());
         Scanner sc = new Scanner(fileConfig);
         int m = sc.nextInt();
-        int receiverId = sc.nextInt();
 
         System.out.println("Number of messages: " + m);
-        System.out.println("Receiver ID: " + receiverId);
 
         hosts = parser.hosts();
 
         for(Host host: hosts){
-            if(host.getId() == receiverId) {
+            if(host.getId() == parser.myId()) {
                 socket = new DatagramSocket(host.getPort());
             }
         }
@@ -134,37 +168,19 @@ public class Main {
 
         delivered = new HashSet<>();
 
+        Receiver receiver = new Receiver();
+        Thread receiverThread = new Thread(receiver);
+        receiverThread.start();
 
-        if(parser.myId() == receiverId){
-            System.out.println("I am the receiver");
-            byte[] buffer = new byte[1024];
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-            Message message = null;
-            while (true) {
-                socket.receive(packet);
-                try {
-                    message = new Message(packet.getData());
-                }
-                catch (Exception ClassNotFound){
-                    continue;
-                }
-                if(message != null) plDeliver(message);
-                packet.setLength(buffer.length);
-            }
-
-        }
-        else {
-            System.out.println("I am one of the senders");
-            // Set up the address for the receiver
-
-            // Send messages
+        while(true) {
             boolean flag = true;
             while (true) {
+                int seq = 0;
                 for(int i = 1; i <= m; i++) {
                     System.out.println("Sending message: " + i);
                     if(flag)logs.add("b " + i);
-                    Message message = new Message(parser.myId(), i, i);
-                    flp2pSend(receiver, message);
+                    Message message = new Message(parser.myId(), i, seq++);
+                    rbBroadcast(message);
                 }
                 flag = false;
             }
