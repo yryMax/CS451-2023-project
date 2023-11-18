@@ -18,6 +18,8 @@ public class Main {
     private static FileWriter writer;
     private static Set<Message> delivered;
     private static DatagramSocket socket;
+    private static List<Host>hosts;
+
     private static void handleSignal() {
         //immediately stop network packet processing
         System.out.println("Immediately stopping network packet processing.");
@@ -52,7 +54,7 @@ public class Main {
     }
 
 
-    public static boolean plDeliver(Message message) throws IOException {
+    public static boolean bebDeliver(Message message) throws IOException {
         System.out.println("Received message: " + message.toString());
         if(!delivered.contains(message)){
             delivered.add(message);
@@ -66,6 +68,12 @@ public class Main {
             }
         }
         return true;
+    }
+
+    public static void bebBroadcast(Message message) throws IOException {
+        for(Host h: hosts){
+           flp2pSend(h, message);
+        }
     }
     public static void main(String[] args) throws IOException {
         Parser parser = new Parser(args);
@@ -110,20 +118,12 @@ public class Main {
         System.out.println("Number of messages: " + m);
         System.out.println("Receiver ID: " + receiverId);
 
-        int n = parser.hosts().size();
+        hosts = parser.hosts();
 
-        Host receiver = null;
-        Host sender = null;
-
-        Map<Integer, Integer> seq = new HashMap<>();
-        for(Host host: parser.hosts()){
-            if(host.getId() == receiverId){
-                receiver = host;
+        for(Host host: hosts){
+            if(host.getId() == receiverId) {
+                socket = new DatagramSocket(host.getPort());
             }
-            if(host.getId() == parser.myId()){
-                sender = host;
-            }
-            seq.put(host.getId(), 0);
         }
 
         String path = parserOutput.output();
@@ -131,8 +131,10 @@ public class Main {
         file.createNewFile();
         writer = new FileWriter(file, false);
 
-        socket = new DatagramSocket(sender.getPort());
+
         delivered = new HashSet<>();
+
+
         if(parser.myId() == receiverId){
             System.out.println("I am the receiver");
             byte[] buffer = new byte[1024];
