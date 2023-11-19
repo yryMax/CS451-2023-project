@@ -20,7 +20,9 @@ public class Main {
     private static DatagramSocket socket;
     private static List<Host>hosts;
 
+    private static int[] localSeq;
 
+    private static Map<Integer, PriorityQueue<Message>> pending;
 
     static class Receiver implements Runnable{
 
@@ -38,7 +40,7 @@ public class Main {
                         continue;
                     }
                     if (message != null) {
-                        rbDeliver(message);
+                        FIFODeliver(message);
                     }
                     packet.setLength(buffer.length);
                 } catch (IOException e) {
@@ -89,8 +91,8 @@ public class Main {
         }
     }
 
-    public static void rbBroadcast(Message message)  throws IOException {
-        rbDeliver(message);
+    public static void FIFOBroadcast(Message message)  throws IOException {
+        FIFODeliver(message);
     }
 
     public static void finalDeliver(Message message) throws IOException {
@@ -103,14 +105,22 @@ public class Main {
             logs.clear();
         }
     }
-    public static void rbDeliver(Message message)  throws IOException {
-        System.out.println("Received message: " + message.toString() + "From p2plink");
-        if(!delivered.contains(message)){
+
+    public static void FIFODeliver(Message message)  throws IOException {
+        System.out.println("Received message: " + message.toString() + " From p2plink");
+        if(!delivered.contains(message)) {
             delivered.add(message);
-            finalDeliver(message);
+            PriorityQueue<Message> pm = pending.get(message.getSenderId());
+            pm.add(message);
+            while (!pm.isEmpty() && pm.peek().getSeqNum() == localSeq[message.getSenderId()]+1) {
+                Message m = pm.poll();
+                localSeq[message.getSenderId()]++;
+                finalDeliver(m);
+            }
             bebBroadcast(message);
         }
     }
+
     public static void main(String[] args) throws IOException {
         Parser parser = new Parser(args);
         parser.parse();
@@ -154,17 +164,25 @@ public class Main {
 
         hosts = parser.hosts();
 
+        pending = new HashMap<>();
+        localSeq = new int[hosts.size()+1];
+
         for(Host host: hosts){
             if(host.getId() == parser.myId()) {
                 socket = new DatagramSocket(host.getPort());
             }
+            pending.put(host.getId(), new PriorityQueue<Message>(new Comparator<Message>() {
+                @Override
+                public int compare(Message o1, Message o2) {
+                    return o1.getSeqNum() - o2.getSeqNum();
+                }
+            }));
         }
 
         String path = parserOutput.output();
         File file = new File(path);
         file.createNewFile();
         writer = new FileWriter(file, false);
-
 
         delivered = new HashSet<>();
 
@@ -175,12 +193,11 @@ public class Main {
         while(true) {
             boolean flag = true;
             while (true) {
-                int seq = 0;
                 for(int i = 1; i <= m; i++) {
                     System.out.println("Sending message: " + i);
                     if(flag)logs.add("b " + i);
-                    Message message = new Message(parser.myId(), i, seq++);
-                    rbBroadcast(message);
+                    Message message = new Message(parser.myId(), i, i);
+                    FIFOBroadcast(message);
                 }
                 flag = false;
             }

@@ -8,6 +8,7 @@ public class Message implements Serializable {
     private int message;
     private int seqNum;
 
+
     public Message(int senderId, int message, int seqNum) {
         this.senderId = senderId;
         this.message = message;
